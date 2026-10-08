@@ -1,1 +1,72 @@
-<h1>hello world</h1>
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Contacts</title>
+        <link rel="stylesheet" href="/styles.css">
+        <script type="module" src="/app.js"></script>
+    </head>
+    <body>
+        <div class="app">
+            <aside class="sidebar">
+                <header>
+                    <h1>Contacts</h1>
+                    <button type="button" class="icon-button add" aria-label="Add contact">+</button>
+                </header>
+
+                <ul>
+                    <li><button type="button" class="contact-item">Andra Inde</button></li>
+                    <li><button type="button" class="contact-item">Archibald Burns</button></li>
+                    <li><button type="button" class="contact-item">Berk Carruth</button></li>
+                    <li><button type="button" class="contact-item" aria-current="true">Craggy Bramble</button></li>
+                    <li><button type="button" class="contact-item">Davita de Juares</button></li>
+                </ul>
+            </aside>
+
+            <main class="detail">
+                <form class="contact-form" novalidate>
+                    <div class="name-row">
+                        <div class="field">
+                            <label for="first-name">First Name</label>
+                            <input id="first-name" name="first_name" type="text" maxlength="100" autocomplete="off" value="Craggy">
+                        </div>
+                        <div class="field">
+                            <label for="last-name">Last Name</label>
+                            <input id="last-name" name="last_name" type="text" maxlength="100" autocomplete="off" value="Bramble">
+                        </div>
+                    </div>
+
+                    <fieldset class="emails">
+                        <legend>Email</legend>
+                        <ul class="email-list">
+                            <li class="email-item">
+                                <span>craggy.bramble@gmail.com</span>
+                                <button type="button" class="icon-button remove" aria-label="Remove craggy.bramble@gmail.com">-</button>
+                            </li>
+                            <li class="email-item">
+                                <span>cbramble@marcham.com</span>
+                                <button type="button" class="icon-button remove" aria-label="Remove cbramble@marcham.com">-</button>
+                            </li>
+                        </ul>
+                        <button type="button" class="add-email">
+                            <span class="icon-button add" aria-hidden="true">+</span>
+                            add email
+                        </button>
+                    </fieldset>
+
+                    <footer class="actions">
+                        <button type="button" class="button danger">Delete</button>
+                        <div class="actions-right">
+                            <button type="button" class="button secondary">Cancel</button>
+                            <button type="submit" class="button primary">Save</button>
+                        </div>
+                    </footer>
+
+                </form>
+            </main>
+
+        </div>
+    </body>
+
+</html>
