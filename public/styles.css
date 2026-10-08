@@ -1,4 +1,4 @@
-/* Design variables */
+/* design variables */
 :root {
     --blue: #5b8def;
     --blue-dark: #3f74d8;
@@ -13,7 +13,7 @@
     --radius: 2px;
 }
 
-/* Base styles */
+/* base styles */
 
 *, *::before, *::after {
     box-sizing: border-box;
@@ -37,14 +37,19 @@ input:focus-visible {
     outline-offset: 2px;
 }
 
-/* Page layout */
+/* make the hidden attribute always win, even over stuff like display: flex */
+[hidden] {
+    display: none !important;
+}
+
+/* page layout */
 
 .app {
     display: flex;
     height: 100vh;
 }
 
-/* Sidebar */
+/* sidebar */
 .sidebar {
     flex: 0 0 300px;
     background: var(--sidebar-bg);
@@ -79,6 +84,9 @@ input:focus-visible {
     text-align: left;
     font-size: 1.25rem;
     color: var(--muted);
+    overflow: hidden;
+    text-overflow: ellipsis; /* really long names get cut off with … instead of breaking the layout */
+    white-space: nowrap;
 }
 
 .contact-item:hover {
@@ -90,7 +98,7 @@ input:focus-visible {
     color: #fff;
 }
 
-/* Round icon buttons (+ and -) */
+/* round icon buttons (+ and -) */
 .icon-button {
     display: inline-flex;
     align-items: center;
@@ -113,7 +121,7 @@ input:focus-visible {
     background: var(--red);
 }
 
-/* Detail panel */
+/* detail panel */
 
 .detail {
     flex: 1; /* take all the leftover space */
@@ -187,7 +195,7 @@ input:focus-visible {
   opacity: 1;
 }
 
-/* Touch screens can't hover, so always show it there */
+/* touch screens can't hover so just always show it there */
 @media (hover: none) {
   .email-item .remove { opacity: 1; }
 }
@@ -209,7 +217,7 @@ input:focus-visible {
   font-size: 1.2rem;
 }
 
-/* Bottom buttons */
+/* bottom buttons */
 .actions {
   display: flex;
   justify-content: space-between;
@@ -220,6 +228,7 @@ input:focus-visible {
 .actions-right {
   display: flex;
   gap: 24px;
+  margin-left: auto; /* keeps it on the right even when delete is hidden for a new contact */
 }
 
 .button {
@@ -231,13 +240,18 @@ input:focus-visible {
 }
 
 .button.primary { background: var(--blue); color: #fff; }
-.button.primary:hover { background: var(--blue-dark); }
+.button.primary:hover:not(:disabled) { background: var(--blue-dark); }
 
 .button.secondary { background: #fff; border-color: var(--blue); color: var(--text); }
-.button.secondary:hover { background: var(--blue-tint); }
+.button.secondary:hover:not(:disabled) { background: var(--blue-tint); }
 
 .button.danger { background: var(--red); color: #fff; }
-.button.danger:hover { background: var(--red-dark); }
+.button.danger:hover:not(:disabled) { background: var(--red-dark); }
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
 .list-message {
     padding: 10px 24px;
@@ -245,9 +259,163 @@ input:focus-visible {
     font-style: italic;
 }
 
+/* search */
+.search {
+    padding: 0 24px 12px;
+}
+
+.search input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--input-border);
+    border-radius: var(--radius);
+    background: #fff;
+    font: inherit;
+    font-size: 1rem;
+    color: var(--text);
+}
+
+/* empty panel and form title */
+.detail-empty {
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--muted);
+}
+
+.form-title {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 400;
+}
+
+/* validation messages and hints */
+.field-error,
+.field-hint {
+    margin: 6px 0 0;
+    font-size: 0.9rem;
+}
+
+.field-error { color: var(--red-dark); }
+.field-hint { color: var(--muted); }
+
+.form-error {
+    margin: 0;
+    color: var(--red-dark);
+}
+
+input[aria-invalid="true"] {
+    border-color: var(--red) !important;
+}
+
+/* email rows */
+.email-address {
+    min-width: 0;
+    overflow-wrap: anywhere; /* long emails wrap instead of pushing the page sideways */
+}
+
+.new-email {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.new-email input {
+    flex: 1;
+    min-width: 0;
+    max-width: 360px;
+    padding: 8px 12px;
+    border: 1px solid var(--input-border);
+    border-radius: var(--radius);
+    background: var(--input-bg);
+    font: inherit;
+    font-size: 1.1rem;
+    color: var(--text);
+}
+
+.link-button {
+    padding: 4px;
+    border: 0;
+    background: none;
+    font-size: 1rem;
+    color: var(--blue-dark);
+}
+
+.link-button.muted { color: var(--muted); }
+
+/* confirm popup */
+.dialog {
+    width: calc(100% - 32px);
+    max-width: 420px;
+    padding: 24px;
+    border: 0;
+    border-radius: 6px;
+    box-shadow: 0 10px 30px rgb(0 0 0 / 0.2);
+}
+
+.dialog::backdrop {
+    background: rgb(0 0 0 / 0.35);
+}
+
+.dialog h2 {
+    margin: 0 0 8px;
+    font-size: 1.25rem;
+}
+
+.dialog p {
+    margin: 0 0 24px;
+    color: var(--muted);
+}
+
+.dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.dialog .button {
+    min-width: 0;
+    font-size: 1rem;
+}
+
+/* toast messages */
+.toast-region {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+.toast {
+    padding: 10px 16px;
+    border-radius: 4px;
+    background: var(--text);
+    color: #fff;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 0.2);
+    animation: toast-in 160ms ease-out;
+}
+
+@keyframes toast-in {
+    from { opacity: 0; transform: translateY(8px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .toast { animation: none; }
+    .email-item .remove { transition: none; }
+}
+
+/* small screens, stack the list on top of the form */
 @media (max-width: 700px) {
     .app { flex-direction: column; height: auto; }
     .sidebar { flex: none; }
     .detail { padding: 24px 16px; }
     .name-row { flex-direction: column; gap: 16px; }
+    .actions-right { gap: 12px; }
+    .button { min-width: 0; }
 }

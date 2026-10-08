@@ -15,57 +15,85 @@
             <aside class="sidebar">
                 <header class="sidebar-header">
                     <h1>Contacts</h1>
-                    <button type="button" class="icon-button add" aria-label="Add contact">+</button>
+                    <button type="button" id="new-contact-button" class="icon-button add" aria-label="Add contact" title="Add contact">+</button>
                 </header>
 
+                <div class="search">
+                    <input id="search-input" type="search" placeholder="Search by name or email" aria-label="Search contacts" autocomplete="off">
+                </div>
+
                 <ul class="contact-list">
-                    <li class="list-message">Loading contacts...</li>
+                    <li class="list-message">Loading contacts…</li>
                 </ul>
             </aside>
 
             <main class="detail">
-                <form class="contact-form" novalidate>
-                    <div class="name-row">
-                        <div class="field">
-                            <label for="first-name">First Name</label>
-                            <input id="first-name" name="first_name" type="text" maxlength="100" autocomplete="off" value="Craggy">
+                <p class="detail-empty">Select a contact, or add a new one with +.</p>
+
+                <form class="contact-form" novalidate hidden>
+                    <h2 class="form-title" hidden>New contact</h2>
+
+                    <div>
+                        <div class="name-row">
+                            <div class="field">
+                                <label for="first-name">First Name</label>
+                                <input id="first-name" name="first_name" type="text" maxlength="100" autocomplete="off" aria-describedby="first-name-error">
+                                <p id="first-name-error" class="field-error" hidden></p>
+                            </div>
+                            <div class="field">
+                                <label for="last-name">Last Name</label>
+                                <input id="last-name" name="last_name" type="text" maxlength="100" autocomplete="off" aria-describedby="last-name-error">
+                                <p id="last-name-error" class="field-error" hidden></p>
+                            </div>
                         </div>
-                        <div class="field">
-                            <label for="last-name">Last Name</label>
-                            <input id="last-name" name="last_name" type="text" maxlength="100" autocomplete="off" value="Bramble">
-                        </div>
+                        <p class="name-hint field-hint" hidden></p>
                     </div>
 
                     <fieldset class="emails">
                         <legend>Email</legend>
-                        <ul class="email-list">
-                            <li class="email-item">
-                                <span>craggy.bramble@gmail.com</span>
-                                <button type="button" class="icon-button remove" aria-label="Remove craggy.bramble@gmail.com">−</button>
-                            </li>
-                            <li class="email-item">
-                                <span>cbramble@marcham.com</span>
-                                <button type="button" class="icon-button remove" aria-label="Remove cbramble@marcham.com">−</button>
-                            </li>
-                        </ul>
-                        <button type="button" class="add-email">
+                        <ul class="email-list"></ul>
+
+                        <!-- figma comment 2, clicking add email shows an input for the new email -->
+                        <div class="new-email" hidden>
+                            <input id="new-email-input" type="email" maxlength="254" placeholder="name@example.com" aria-label="New email address" autocomplete="off" aria-describedby="new-email-error">
+                            <button type="button" id="new-email-add" class="link-button">Add</button>
+                            <button type="button" id="new-email-cancel" class="link-button muted">Cancel</button>
+                        </div>
+                        <p id="new-email-error" class="field-error" hidden></p>
+                        <p id="emails-error" class="field-error" hidden></p>
+
+                        <button type="button" id="add-email-button" class="add-email">
                             <span class="icon-button add" aria-hidden="true">+</span>
                             add email
                         </button>
                     </fieldset>
 
+                    <p class="form-error" role="alert" hidden></p>
+
                     <footer class="actions">
-                        <button type="button" class="button danger">Delete</button>
+                        <button type="button" id="delete-button" class="button danger">Delete</button>
                         <div class="actions-right">
-                            <button type="button" class="button secondary">Cancel</button>
-                            <button type="submit" class="button primary">Save</button>
+                            <button type="button" id="cancel-button" class="button secondary">Cancel</button>
+                            <button type="submit" id="save-button" class="button primary">Save</button>
                         </div>
                     </footer>
-
                 </form>
             </main>
-
         </div>
-    </body>
 
+        <!-- reusable are you sure popup, used for delete and for throwing away unsaved changes -->
+        <dialog id="confirm-dialog" class="dialog" aria-labelledby="confirm-title">
+            <form method="dialog">
+                <h2 id="confirm-title"></h2>
+                <p id="confirm-message"></p>
+                <div class="dialog-actions">
+                    <button value="cancel" class="button secondary" autofocus>Cancel</button>
+                    <button value="confirm" id="confirm-ok" class="button danger">Confirm</button>
+                </div>
+            </form>
+        </dialog>
+
+        <!-- little saved / deleted messages. aria-live makes screen readers read them out -->
+        <div class="toast-region" aria-live="polite"></div>
+    </body>
 </html>

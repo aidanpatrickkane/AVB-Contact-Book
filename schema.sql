@@ -1,4 +1,4 @@
--- One row per person.
+-- one row per person
 CREATE TABLE IF NOT EXISTS contacts (
     id          BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, -- generated always as identity makes postgres auto-increment and assign id and not allow manual id setting
     first_name  TEXT NOT NULL CHECK (length(trim(first_name)) BETWEEN 1 AND 100), -- not null makes names required
@@ -7,8 +7,8 @@ CREATE TABLE IF NOT EXISTS contacts (
     updated_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- A contact can have many emails (one-to-many), so emails get their own table.
--- The foreign key lives on the "many" side: each email points to its contact.
+-- a contact can have many emails (one to many) so emails get their own table
+-- the foreign key goes on the many side, each email points back to its contact
 CREATE TABLE IF NOT EXISTS emails (
     id          BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     contact_id  BIGINT NOT NULL REFERENCES contacts (id) ON DELETE CASCADE, -- REFERENCES contacts (id) is the foreign key. You can't add an email for a contact that doesn't exist.
@@ -16,10 +16,8 @@ CREATE TABLE IF NOT EXISTS emails (
     created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- A contact can't have the same email twice, ignoring case
--- (john@x.com and John@X.com count as the same).
--- contact_id is the first column, so this index also makes
--- "get all emails for contact X" fast.
+-- a contact can't have the same email twice, ignoring case (john@x.com and John@X.com count as the same)
+-- contact_id is the first column so this also makes getting all of one contact's emails fast
 CREATE UNIQUE INDEX IF NOT EXISTS emails_contact_address_key
     ON emails (contact_id, lower(address));
 
