@@ -7,7 +7,7 @@ A contact manager where you can list, view, add, edit, search and delete contact
 - **Database:** Postgres on Neon
 - **Hosting:** Vercel
 
-The design follows the Figma mockup (`docs/outcome.png`), including both Figma comments:
+The design follows the Figma mockup, including both Figma comments:
 1. The email delete button (⊖) appears on hover.
 2. Clicking "add email" shows an input for the new email.
 
@@ -18,14 +18,13 @@ The design follows the Figma mockup (`docs/outcome.png`), including both Figma c
 - Multiple emails per contact
 - First and last name are required, and validated in the browser, the API and the database
 
-**Extras, added with real use in mind**
-- **Search** by name or email
+**User-centric extra features, added with real use in mind**
+- **Search** by name or email, for when the sidebar gets long
 - **Save and Cancel act on a draft.** Email adds and removals only happen when you click Save, so Cancel really undoes everything.
 - **Unsaved-changes protection.** Switching contacts or closing the tab with unsaved edits asks first.
 - **Delete confirmation** that says exactly who is being deleted
 - **Instant validation messages** under each field, plus clear messages if the server rejects something
 - **Duplicate checks:** the same email can't be added twice to one contact (case-insensitive). A same-name contact shows a hint but is allowed, since two people can share a name.
-- **An email typed but not yet added is still saved,** instead of being silently lost
 - **Double-save protection.** The Save button is disabled and shows "Saving…" while a request is in progress.
 - **Loading, empty, "no search results" and error states**
 - **Accessibility:**
@@ -41,7 +40,6 @@ The design follows the Figma mockup (`docs/outcome.png`), including both Figma c
 ```
 app.py              FastAPI app: API endpoints, validation, database access
 schema.sql          Database tables (contacts, emails)
-seed.sql            Optional demo data from the mockup
 requirements.txt    Python packages
 public/
   index.html        Page structure
@@ -78,25 +76,7 @@ updated_at
 | DELETE | `/api/contacts/{id}` | Delete a contact | 204 |
 | GET | `/api/health` | Check that the app can reach the database | 200 |
 
-Errors: **404** if the contact doesn't exist, and **422** if the input is invalid (with a message for each field). Interactive docs are at `/docs`.
-
-## Running locally
-
-1. Create a `.env` file with a Postgres connection string (a Neon dev branch is ideal):
-   ```
-   DATABASE_URL=postgresql://...
-   ```
-2. Create the tables: run `schema.sql`, and optionally `seed.sql`, in the Neon SQL Editor.
-3. Install and run:
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   pip install -r requirements.txt
-   uvicorn app:app --reload
-   ```
-4. Open http://localhost:8000.
-
-Locally, FastAPI serves the `public/` folder as well, so the page and the API share one address. On Vercel, `public/` is served by Vercel's CDN and Python only handles `/api/...`.
+Errors: **404** if the contact doesn't exist, and **422** if the input is invalid (with a message for each field).
 
 ## Deployment
 
@@ -111,19 +91,15 @@ The app is on Vercel with the FastAPI framework preset. The Neon integration pro
 
   The limits match in all three places.
 - **Saving a contact is one atomic transaction.** The contact and its emails are saved together or not at all, so there's never half-saved data.
-- **PUT replaces the whole email list.** This matches the single Save button: the form holds the complete contact, and the database is made to match it. Emails are deleted and re-inserted rather than compared one by one. That's simpler, and nothing depends on an email's id yet. If something did, I'd switch to comparing the lists.
+- **PUT replaces the whole email list.** This matches the single Save button: the form holds the complete contact, and the database is made to match it. Emails are deleted and re-inserted rather than compared one by one.
 - **Parameterized SQL** (`%s` placeholders) everywhere, so user input can never run as SQL.
 - **User data is always rendered with `textContent`**, never `innerHTML`, which prevents XSS.
-- **State, then render.** All UI data lives in one `state` object. Every change updates the state, then re-renders from it, the same idea frameworks like React use, done by hand.
+- **State, then render.** All UI data lives in one `state` object. Every change updates the state, then re-renders from it.
 - **One database connection per request.** This suits serverless hosting, and it uses Neon's pooled connection string.
-- **The same email on two different contacts is allowed** (for example, a shared family inbox).
-- **No login,** as the brief asked. The trade-off is that anyone with the link can edit the data. For real use I'd add authentication and per-user contacts.
+- **The same email on two different contacts is allowed**.
+- **No login,** as the brief asked.
 
 ## What I'd do next
 
 - **Pagination** for very large contact lists, done on the API side (for example `?limit=50&offset=100`), alongside search
-- **Server-side search,** once the list is too big to load all at once
-- **Undo for delete,** instead of (or as well as) the confirmation popup
-- **More fields:** phone, company, notes. This needs a schema migration, using a migrations tool such as Alembic.
-- **Automated tests:** pytest for the API, and Playwright for the UI flows
-- **Authentication,** if this became a real multi-user product
+- **More fields:** phone, company, notes.
