@@ -4,18 +4,21 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Contacts</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap">
         <link rel="stylesheet" href="/styles.css">
         <script type="module" src="/app.js"></script>
     </head>
     <body>
         <div class="app">
             <aside class="sidebar">
-                <header>
+                <header class="sidebar-header">
                     <h1>Contacts</h1>
                     <button type="button" class="icon-button add" aria-label="Add contact">+</button>
                 </header>
 
-                <ul>
+                <ul class="contact-list">
                     <li><button type="button" class="contact-item">Andra Inde</button></li>
                     <li><button type="button" class="contact-item">Archibald Burns</button></li>
                     <li><button type="button" class="contact-item">Berk Carruth</button></li>
@@ -42,11 +45,11 @@
                         <ul class="email-list">
                             <li class="email-item">
                                 <span>craggy.bramble@gmail.com</span>
-                                <button type="button" class="icon-button remove" aria-label="Remove craggy.bramble@gmail.com">-</button>
+                                <button type="button" class="icon-button remove" aria-label="Remove craggy.bramble@gmail.com">−</button>
                             </li>
                             <li class="email-item">
                                 <span>cbramble@marcham.com</span>
-                                <button type="button" class="icon-button remove" aria-label="Remove cbramble@marcham.com">-</button>
+                                <button type="button" class="icon-button remove" aria-label="Remove cbramble@marcham.com">−</button>
                             </li>
                         </ul>
                         <button type="button" class="add-email">
