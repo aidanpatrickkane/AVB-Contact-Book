@@ -128,6 +128,8 @@ def health():
         conn.execute("SELECT 1")
     return {"status": "ok"}
 
+# need to let fastapi serve public as well
+if not os.environ.get("VERCEL"):
+    from fastapi.staticfiles import StaticFiles
 
-# create endpoint needs
-## pydantic model describing what a valid request body looks like, a database dependency that opens and connection for each request and closes it afterwards, and the insert into contacts, getting the new id back and inserting each email using that id
+    app.mount("/", StaticFiles(directory="public", html=True), name="frontend")
